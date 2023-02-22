@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { AddNameForm } from "./AddNameForm";
+import { FilterByName } from "./FilterByName";
+import { PhonebookList } from "./PhonebookList";
 
 export const PhonebookPage = () => {
   const [persons, setPersons] = useState([
@@ -50,39 +53,22 @@ export const PhonebookPage = () => {
       return;
     }
     setPersons([...persons, { name: newName, phone: phoneNumber }]);
+    setFilteredPersons([...persons, { name: newName, phone: phoneNumber }]);
     setNewName("");
     setPhoneNumber("");
   };
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with: <input value={filterName} onChange={changeFilterNameHandler} />
-      </div>
-      <form>
-        <div>
-          name: <input value={newName} onChange={changeNameHandler} />
-        </div>
-        <div>
-          number:{" "}
-          <input
-            value={phoneNumber}
-            onChange={changePhoneNumberHandler}
-            placeholder="+995-587-555-44-22"
-          />
-        </div>
-        <div>
-          <button type="submit" onClick={submitNameHandler}>
-            add
-          </button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {filteredPersons.map((person) => (
-        <div key={person.name}>
-          {person.name} {person.phone}
-        </div>
-      ))}
+      <FilterByName filterName={filterName} changeFilterNameHandler={changeFilterNameHandler}/>
+      <AddNameForm
+        newName={newName}
+        changeNameHandler={changeNameHandler}
+        phoneNumber={phoneNumber}
+        changePhoneNumberHandler={changePhoneNumberHandler}
+        submitNameHandler={submitNameHandler}
+      />
+      <PhonebookList filteredPersons={filteredPersons} />
     </div>
   );
 };

@@ -10,6 +10,11 @@ export const PhonebookPage = () => {
 
   const submitNameHandler = (event) => {
     event.preventDefault();
+    if (persons.find(person => person.name === newName))
+    {
+      alert(`${newName} is already in the phonebook!`);
+      return;
+    }
     setPersons([...persons, {name: newName}]);
     setNewName('');
   }

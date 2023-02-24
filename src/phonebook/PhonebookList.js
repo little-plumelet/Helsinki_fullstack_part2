@@ -3,7 +3,7 @@ export const PhonebookList = ({filteredPersons}) => {
     <>
       <h2>Numbers</h2>
       {filteredPersons.map((person) => (
-        <div key={person.name}>
+        <div key={person.id}>
           {person.name} {person.phone}
         </div>
       ))}

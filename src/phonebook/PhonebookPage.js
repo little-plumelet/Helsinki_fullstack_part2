@@ -1,10 +1,9 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { AddNameForm } from "./AddNameForm";
-import { BASE_URL } from "./constants";
 import { FilterByName } from "./FilterByName";
 import { PhonebookList } from "./PhonebookList";
 import { addPersonToPhoneBook } from "./services/addPersonToPhonebook";
+import { getAllPersons } from "./services/getAllPersons";
 
 export const PhonebookPage = () => {
   const [persons, setPersons] = useState([]);
@@ -14,10 +13,10 @@ export const PhonebookPage = () => {
   const [filterName, setFilterName] = useState("");
 
   useEffect(() => {
-    axios.get(BASE_URL).then((response) => {
-      setPersons(response.data);
-      setFilteredPersons(response.data);
-    });
+    getAllPersons().then(data => {
+      setPersons(data);
+      setFilteredPersons(data);
+    })
   }, []);
 
   useEffect(() => {});

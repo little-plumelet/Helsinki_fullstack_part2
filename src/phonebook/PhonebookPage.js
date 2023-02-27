@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { AddNameForm } from "./AddNameForm";
+import { ErrorMessage } from "./commonComponents/ErrorMessage/ErrorMessage";
 import { SuccessMessage } from "./commonComponents/SuccessMessage/SuccessMessage";
 import { FilterByName } from "./FilterByName";
 import { PhonebookList } from "./PhonebookList";
@@ -14,7 +15,8 @@ export const PhonebookPage = () => {
   const [newName, setNewName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [filterName, setFilterName] = useState("");
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     getAllPersons().then((data) => {
@@ -80,40 +82,53 @@ export const PhonebookPage = () => {
         name: newName,
         phone: phoneNumber,
         id: existedPerson.id,
-      }).then((addedPerson) => {
+      })
+      .then((addedPerson) => {
         const updatedPersons = persons.map((person) => {
           if (person.id === addedPerson.id) {
             return {
               ...person,
               phone: addedPerson.phone,
             };
-          } else return {...person}
+          } else return { ...person };
         });
         setPersons([...updatedPersons]);
         setFilteredPersons([...updatedPersons]);
         setNewName("");
         setPhoneNumber("");
-      });
+      })
+      .catch(error => {
+        setErrorMessage(`Cannot update ${newName}. Error: ${error}`);
+        setTimeout(() => {
+          setErrorMessage('')
+        }, 3000)
+      })
       return;
     }
 
-    addPersonToPhoneBook({ name: newName, phone: phoneNumber }).then(
-      (addedPerson) => {
+    addPersonToPhoneBook({ name: newName, phone: phoneNumber })
+      .then((addedPerson) => {
         setPersons([...persons, { ...addedPerson }]);
         setFilteredPersons([...persons, { ...addedPerson }]);
         setNewName("");
         setPhoneNumber("");
-        setSuccessMessage(`${addedPerson.name} was added to phonebook`)
+        setSuccessMessage(`${addedPerson.name} was added to phonebook`);
         setTimeout(() => {
-          setSuccessMessage('');
-        }, 3000)
-      }
-    );
+          setSuccessMessage("");
+        }, 3000);
+      })
+      .catch((error) => {
+        setErrorMessage(`Cannot add ${newName} to phonebook. Error: ${error}`);
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 3000);
+      });
   };
 
   return (
     <div>
       {!!successMessage && <SuccessMessage message={successMessage} />}
+      {!!errorMessage && <ErrorMessage message={errorMessage} />}
       <h2>Phonebook</h2>
       <FilterByName
         filterName={filterName}

@@ -3,6 +3,7 @@ import { AddNameForm } from "./AddNameForm";
 import { FilterByName } from "./FilterByName";
 import { PhonebookList } from "./PhonebookList";
 import { addPersonToPhoneBook } from "./services/addPersonToPhonebook";
+import { deletePerson } from "./services/deletePerson";
 import { getAllPersons } from "./services/getAllPersons";
 
 export const PhonebookPage = () => {
@@ -13,13 +14,11 @@ export const PhonebookPage = () => {
   const [filterName, setFilterName] = useState("");
 
   useEffect(() => {
-    getAllPersons().then(data => {
+    getAllPersons().then((data) => {
       setPersons(data);
       setFilteredPersons(data);
-    })
+    });
   }, []);
-
-  useEffect(() => {});
 
   const changeFilterNameHandler = (event) => {
     const filter = event.target.value;
@@ -35,6 +34,17 @@ export const PhonebookPage = () => {
           return acc;
         }, [])
       );
+    }
+  };
+
+  const handleDeleteClick = (id) => {
+    const personToDelete = persons.find((person) => person.id === id);
+    if (window.confirm(`Delete ${personToDelete.name}?`)) {
+      deletePerson(personToDelete).then((id) => {
+        const clearedPresons = persons.filter((person) => person.id !== id);
+        setPersons([...clearedPresons]);
+        setFilteredPersons([...clearedPresons]);
+      });
     }
   };
 
@@ -84,7 +94,10 @@ export const PhonebookPage = () => {
         changePhoneNumberHandler={changePhoneNumberHandler}
         submitNameHandler={submitNameHandler}
       />
-      <PhonebookList filteredPersons={filteredPersons} />
+      <PhonebookList
+        filteredPersons={filteredPersons}
+        handleDeleteClick={handleDeleteClick}
+      />
     </div>
   );
 };

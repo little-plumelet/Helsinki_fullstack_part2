@@ -5,6 +5,7 @@ import { PhonebookList } from "./PhonebookList";
 import { addPersonToPhoneBook } from "./services/addPersonToPhonebook";
 import { deletePerson } from "./services/deletePerson";
 import { getAllPersons } from "./services/getAllPersons";
+import { updatePhoneNumber } from "./services/updatePhoneNumber";
 
 export const PhonebookPage = () => {
   const [persons, setPersons] = useState([]);
@@ -58,8 +59,31 @@ export const PhonebookPage = () => {
 
   const submitNameHandler = (event) => {
     event.preventDefault();
-    if (persons.find((person) => person.name === newName)) {
-      alert(`${newName} is already in the phonebook!`);
+    const existedPerson = persons.find((person) => person.name === newName);
+    if (
+      existedPerson &&
+      window.confirm(
+        `${newName} is already added to phonebook, replace the old number with the new one?`
+      )
+    ) {
+      updatePhoneNumber({
+        name: newName,
+        phone: phoneNumber,
+        id: existedPerson.id,
+      }).then((addedPerson) => {
+        const updatedPersons = persons.map((person) => {
+          if (person.id === addedPerson.id) {
+            return {
+              ...person,
+              phone: addedPerson.phone,
+            };
+          } else return {...person}
+        });
+        setPersons([...updatedPersons]);
+        setFilteredPersons([...updatedPersons]);
+        setNewName("");
+        setPhoneNumber("");
+      });
       return;
     }
     if (!newName || !phoneNumber) {

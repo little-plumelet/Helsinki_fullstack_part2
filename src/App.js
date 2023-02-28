@@ -9,6 +9,7 @@ import {
  import React from 'react';
 import { AnecdotesPage } from './anecdotes/AnecdotesPage';
 import { PhonebookPage } from './phonebook/PhonebookPage';
+import { CountriesPage } from './countries/CountriesPage';
  
 const App = () => {
 
@@ -20,6 +21,7 @@ const App = () => {
           <li style={{listStyleType: 'none'}}><Link to='/unicafe'>unicafe</Link></li>
           <li style={{listStyleType: 'none'}}><Link to='/anecdotes'>anecdotes</Link></li>
           <li style={{listStyleType: 'none'}}><Link to='/phonebook'>phonebook</Link></li>
+          <li style={{listStyleType: 'none'}}><Link to='/countries'>countries</Link></li>
         </ul>
       </div>
       <Routes>
@@ -27,6 +29,7 @@ const App = () => {
         <Route exact path='/unicafe' element={<UniCafePage />} />
         <Route exact path='/anecdotes' element={<AnecdotesPage />} />
         <Route exact path='/phonebook' element={<PhonebookPage />} />
+        <Route exact path='/countries' element={<CountriesPage />} />
       </Routes>
     </Router>
   )

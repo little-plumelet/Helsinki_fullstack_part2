@@ -1,12 +1,34 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { BASE_URI } from "./constants";
+import { useCallback, useEffect, useState } from "react";
+import { BASE_URI, DELAY } from "./constants";
 import { Country } from "./country/Country";
+import { debounce } from "./utils";
 
 export const CountriesPage = () => {
   const [countryName, setCountryName] = useState(null);
   const [countriesList, setCountriesList] = useState(null);
   const [country, setCountry] = useState(null);
+
+  function fetchCountries(countryName) {
+    axios
+      .get(`${BASE_URI}/name/${countryName}`)
+      .then((response) => {
+        if (response.data.length > 1) {
+          setCountriesList(response.data);
+          setCountry(null);
+        } else if (response.data.length === 1) {
+          setCountry(response.data[0]);
+          setCountriesList(null);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+        setCountriesList(null);
+      });
+  }
+  
+  // eslint-disable-next-line
+  const cashedDebounce = useCallback(debounce(fetchCountries, DELAY), [])
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -15,20 +37,12 @@ export const CountriesPage = () => {
 
   useEffect(() => {
     if (countryName) {
-      axios
-        .get(`${BASE_URI}/name/${countryName}`)
-        .then((response) => {
-          if (response.data.length > 1) {
-            setCountriesList(response.data);
-            setCountry(null);
-          } else if (response.data.length === 1) {
-            setCountry(response.data[0]);
-            setCountriesList(null);
-          }
-        })
-        .catch((err) => alert(err));
+      cashedDebounce(countryName);
+    } else {
+      setCountry(null);
+      setCountriesList(null);
     }
-  }, [countryName]);
+  }, [countryName, cashedDebounce]);
 
   return (
     <>

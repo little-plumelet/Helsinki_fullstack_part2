@@ -1,41 +1,57 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { BASE_URI } from "./constants";
+import { Country } from "./country/Country";
 
 export const CountriesPage = () => {
-  const [country, setCountry] = useState(null);
+  const [countryName, setCountryName] = useState(null);
   const [countriesList, setCountriesList] = useState(null);
+  const [country, setCountry] = useState(null);
 
   const handleChange = (e) => {
     e.preventDefault();
-    setCountry(e.target.value);
+    setCountryName(e.target.value);
   };
 
   useEffect(() => {
-    if (country) {
+    if (countryName) {
       axios
-        .get(`${BASE_URI}/name/${country}`)
+        .get(`${BASE_URI}/name/${countryName}`)
         .then((response) => {
-          console.log(response.data);
-          setCountriesList(response.data);
+          if (response.data.length > 1) {
+            setCountriesList(response.data);
+            setCountry(null);
+          } else if (response.data.length === 1) {
+            setCountry(response.data[0]);
+            setCountriesList(null);
+          }
         })
         .catch((err) => alert(err));
     }
-  }, [country]);
+  }, [countryName]);
 
   return (
     <>
-      {"find countries "}
-      <input type="search" onChange={handleChange} value={country ?? ""} />
+      <span>find countries </span>
+      <input type="search" onChange={handleChange} value={countryName ?? ""} />
       {countriesList && countriesList.length > 10 && (
         <div>{"Too many matches. Specify another filter"}</div>
       )}
       {countriesList && countriesList.length <= 10 && (
         <>
           {countriesList.map((country) => (
-            <div key={country.cioc}>{country.name.common}</div>
+            <div key={country.cioc}>{country.name.official}</div>
           ))}
         </>
+      )}
+      {country && (
+        <Country
+          name={country.name.official}
+          capital={country.capital}
+          languages={country.languages}
+          flag={country.flag}
+          area={country.area}
+        />
       )}
     </>
   );

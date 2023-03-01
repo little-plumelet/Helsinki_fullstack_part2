@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { BASE_URI } from "./constants";
-import { Country } from "./country/Country";
-import { useDebounce } from "./useDebounce";
+import { Country } from "./components/Country/Country";
+import { useDebounce } from "./hooks/useDebounce";
+import { CountriesList } from "./components/CountriesList/CountriesList";
 
 export const CountriesPageDebounceHook = () => {
   const [countryNameSearch, setCountryNameSearch] = useState(null);
@@ -34,6 +35,11 @@ export const CountriesPageDebounceHook = () => {
     setCountryNameSearch(e.target.value);
   };
 
+  const handleShow = (country) => {
+    setCountry(country);
+    setCountriesList(null);
+  }
+
   useEffect(() => {
     if (debouncedCountryName) {
       fetchCountries(debouncedCountryName)
@@ -51,11 +57,7 @@ export const CountriesPageDebounceHook = () => {
         <div>{"Too many matches. Specify another filter"}</div>
       )}
       {countriesList && countriesList.length <= 10 && (
-        <>
-          {countriesList.map((country) => (
-            <div key={country.cioc}>{country.name.official}</div>
-          ))}
-        </>
+        <CountriesList countriesList={countriesList} handleClick={handleShow}/>
       )}
       {country && (
         <Country

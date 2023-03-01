@@ -1,17 +1,18 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
-import { BASE_URI, DELAY } from "./constants";
+import { useEffect, useState } from "react";
+import { BASE_URI } from "./constants";
 import { Country } from "./country/Country";
-import { debounce } from "./utils";
+import { useDebounce } from "./useDebounce";
 
-export const CountriesPage = () => {
-  const [countryName, setCountryName] = useState(null);
+export const CountriesPageDebounceHook = () => {
+  const [countryNameSearch, setCountryNameSearch] = useState(null);
   const [countriesList, setCountriesList] = useState(null);
   const [country, setCountry] = useState(null);
+  const debouncedCountryName = useDebounce(countryNameSearch);
 
-  function fetchCountries(countryName) {
+  function fetchCountries(countryNameSearch) {
     axios
-      .get(`${BASE_URI}/name/${countryName}`)
+      .get(`${BASE_URI}/name/${countryNameSearch}`)
       .then((response) => {
         if (response.data.length > 1) {
           setCountriesList(response.data);
@@ -28,27 +29,24 @@ export const CountriesPage = () => {
       });
   }
   
-  // eslint-disable-next-line
-  const cashedDebounce = useCallback(debounce(fetchCountries, DELAY), [])
-
   const handleChange = (e) => {
     e.preventDefault();
-    setCountryName(e.target.value);
+    setCountryNameSearch(e.target.value);
   };
 
   useEffect(() => {
-    if (countryName) {
-      cashedDebounce(countryName);
+    if (debouncedCountryName) {
+      fetchCountries(debouncedCountryName)
     } else {
       setCountry(null);
       setCountriesList(null);
     }
-  }, [countryName, cashedDebounce]);
+  }, [debouncedCountryName]);
 
   return (
     <>
       <span>find countries </span>
-      <input type="search" onChange={handleChange} value={countryName ?? ""} />
+      <input type="search" onChange={handleChange} value={countryNameSearch ?? ""} />
       {countriesList && countriesList.length > 10 && (
         <div>{"Too many matches. Specify another filter"}</div>
       )}

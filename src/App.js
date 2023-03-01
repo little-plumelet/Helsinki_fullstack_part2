@@ -10,6 +10,7 @@ import {
 import { AnecdotesPage } from './anecdotes/AnecdotesPage';
 import { PhonebookPage } from './phonebook/PhonebookPage';
 import { CountriesPage } from './countries/CountriesPage';
+import { CountriesPageDebounceHook } from './countries/CountriesPageDebounceHook';
  
 const App = () => {
 
@@ -22,6 +23,7 @@ const App = () => {
           <li style={{listStyleType: 'none'}}><Link to='/anecdotes'>anecdotes</Link></li>
           <li style={{listStyleType: 'none'}}><Link to='/phonebook'>phonebook</Link></li>
           <li style={{listStyleType: 'none'}}><Link to='/countries'>countries</Link></li>
+          <li style={{listStyleType: 'none'}}><Link to='/countriesDebounce'>{'countries with hook'}</Link></li>
         </ul>
       </div>
       <Routes>
@@ -30,6 +32,7 @@ const App = () => {
         <Route exact path='/anecdotes' element={<AnecdotesPage />} />
         <Route exact path='/phonebook' element={<PhonebookPage />} />
         <Route exact path='/countries' element={<CountriesPage />} />
+        <Route exact path='/countriesDebounce' element={<CountriesPageDebounceHook />} />
       </Routes>
     </Router>
   )

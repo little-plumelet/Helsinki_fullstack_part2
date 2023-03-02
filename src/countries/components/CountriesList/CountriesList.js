@@ -7,9 +7,9 @@ export const CountriesList = ({ countriesList, handleClick }) => {
       <tbody>
         {countriesList?.map((country) => (
           <tr key={country.cioc}>
-            <td>{country.name.official}</td>
+            <td key={country.name.official}>{country.name.official}</td>
             <td>
-              <Button title="show" handleClick={() => handleClick(country)} />
+              <Button key={`${country.name.official}-btn`} title="show" handleClick={() => handleClick(country)} />
             </td>
           </tr>
         ))}

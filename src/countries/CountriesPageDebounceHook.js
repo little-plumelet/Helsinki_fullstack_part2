@@ -4,6 +4,7 @@ import { BASE_URI } from "./constants";
 import { Country } from "./components/Country/Country";
 import { useDebounce } from "./hooks/useDebounce";
 import { CountriesList } from "./components/CountriesList/CountriesList";
+import { Weather } from "./components/Weather/Weather";
 
 export const CountriesPageDebounceHook = () => {
   const [countryNameSearch, setCountryNameSearch] = useState(null);
@@ -29,7 +30,7 @@ export const CountriesPageDebounceHook = () => {
         setCountry(null);
       });
   }
-  
+
   const handleChange = (e) => {
     e.preventDefault();
     setCountryNameSearch(e.target.value);
@@ -38,11 +39,11 @@ export const CountriesPageDebounceHook = () => {
   const handleShow = (country) => {
     setCountry(country);
     setCountriesList(null);
-  }
+  };
 
   useEffect(() => {
     if (debouncedCountryName) {
-      fetchCountries(debouncedCountryName)
+      fetchCountries(debouncedCountryName);
     } else {
       setCountry(null);
       setCountriesList(null);
@@ -52,21 +53,31 @@ export const CountriesPageDebounceHook = () => {
   return (
     <>
       <span>find countries </span>
-      <input type="search" onChange={handleChange} value={countryNameSearch ?? ""} />
+      <input
+        type="search"
+        onChange={handleChange}
+        value={countryNameSearch ?? ""}
+      />
       {countriesList && countriesList.length > 10 && (
         <div>{"Too many matches. Specify another filter"}</div>
       )}
       {countriesList && countriesList.length <= 10 && (
-        <CountriesList countriesList={countriesList} handleClick={handleShow}/>
+        <CountriesList countriesList={countriesList} handleClick={handleShow} />
       )}
       {country && (
-        <Country
-          name={country.name.official}
-          capital={country.capital}
-          languages={country.languages}
-          flag={country.flag}
-          area={country.area}
-        />
+        <>
+          <Country
+            name={country.name.official}
+            capital={country.capital}
+            languages={country.languages}
+            flag={country.flag}
+            area={country.area}
+          />
+          <Weather
+            capital={country.capital}
+            capitalInfo={country.capitalInfo.latlng}
+          />
+        </>
       )}
     </>
   );

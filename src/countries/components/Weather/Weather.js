@@ -33,10 +33,12 @@ export const Weather = ({ capital, capitalInfo }) => {
               <td>{weatherData?.main?.temp} Celcius</td>
             </tr>
             <tr>
-              <img
-                src={`http://openweathermap.org/img/wn/${weatherData?.weather[0]?.icon}@2x.png`}
-                alt='weather icon'
-              ></img>
+              <td>
+                <img
+                  src={`http://openweathermap.org/img/wn/${weatherData?.weather[0]?.icon}@2x.png`}
+                  alt="weather icon"
+                />
+              </td>
             </tr>
             <tr>
               <td>wind </td>
